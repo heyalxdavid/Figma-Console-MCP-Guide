@@ -3,6 +3,8 @@ import starlight from '@astrojs/starlight';
 import starlightThemeBlack from 'starlight-theme-black';
 
 export default defineConfig({
+  site: 'https://github.intuit.com',
+  base: '/pages/ajohnson39/alexs-ai-tips',
   integrations: [
     starlight({
       plugins: [starlightThemeBlack({})],
@@ -24,6 +26,7 @@ export default defineConfig({
             { slug: 'getting-started/cursor-setup' },
             { slug: 'getting-started/figma-mcp' },
             { slug: 'getting-started/figma-console-mcp' },
+            { slug: 'getting-started/github-enterprise' },
           ],
         },
         {
