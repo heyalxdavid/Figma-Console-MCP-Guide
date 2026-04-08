@@ -53,6 +53,7 @@ export default defineConfig({
         },
         {
           label: 'Skills',
+          badge: { text: 'WIP', variant: 'caution' },
           autogenerate: { directory: 'skills' },
         },
         {
