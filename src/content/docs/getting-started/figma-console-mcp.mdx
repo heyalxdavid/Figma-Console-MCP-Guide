@@ -62,7 +62,9 @@ Open a new chat in Cursor (Agent mode) and paste this prompt:
 
 > Add the Figma Console MCP server to my mcp.json. Use the NPX setup with the command `npx` and args `["-y", "figma-console-mcp@latest"]`. I need two environment variables: `FIGMA_ACCESS_TOKEN` set to `figd_PASTE_YOUR_TOKEN_HERE` and `ENABLE_MCP_APPS` set to `true`. The server name should be `figma-console`. Here are the docs for reference: https://docs.figma-console-mcp.southleft.com/setup
 
-Replace `figd_PASTE_YOUR_TOKEN_HERE` with your actual token before sending.
+<Aside type="caution">
+Before sending, replace `figd_PASTE_YOUR_TOKEN_HERE` with your actual Figma token. If you send the prompt as-is, it will configure the MCP with a broken token.
+</Aside>
 
 ### Or set it up manually
 
@@ -108,7 +110,9 @@ Paste this prompt into Claude Code:
 
 > Add the Figma Console MCP server. Run this command: `claude mcp add figma-console -s user -e FIGMA_ACCESS_TOKEN=figd_PASTE_YOUR_TOKEN_HERE -e ENABLE_MCP_APPS=true -- npx -y figma-console-mcp@latest`. Here are the docs for reference: https://docs.figma-console-mcp.southleft.com/setup
 
-Replace `figd_PASTE_YOUR_TOKEN_HERE` with your actual token before sending.
+<Aside type="caution">
+Before sending, replace `figd_PASTE_YOUR_TOKEN_HERE` with your actual Figma token. If you send the prompt as-is, it will configure the MCP with a broken token.
+</Aside>
 
 ### Or run it yourself
 
@@ -116,7 +120,11 @@ Replace `figd_PASTE_YOUR_TOKEN_HERE` with your actual token before sending.
 claude mcp add figma-console -s user -e FIGMA_ACCESS_TOKEN=figd_YOUR_TOKEN_HERE -e ENABLE_MCP_APPS=true -- npx -y figma-console-mcp@latest
 ```
 
-The `-s user` flag makes it available across all your projects. You can verify it was added by running `claude mcp list`.
+The `-s user` flag makes it available across all your projects.
+
+### Verify it was added
+
+Run `claude mcp list` in your terminal to confirm `figma-console` appears in the list. Then start a new Claude Code session and type `/mcp` to see connected servers and confirm `figma-console` shows as connected.
 
 </TabItem>
 <TabItem label="Claude Desktop">
@@ -127,7 +135,9 @@ Paste this prompt into Claude Desktop:
 
 > I need to add the Figma Console MCP server to my Claude Desktop config. The setup uses command `npx` with args `["-y", "figma-console-mcp@latest"]` and two env vars: `FIGMA_ACCESS_TOKEN` set to `figd_PASTE_YOUR_TOKEN_HERE` and `ENABLE_MCP_APPS` set to `true`. The server name should be `figma-console`. Can you show me exactly what to add to my config? I can find it at **Settings > Developer > Edit Config**. Here are the docs for reference: https://docs.figma-console-mcp.southleft.com/setup
 
-Replace `figd_PASTE_YOUR_TOKEN_HERE` with your actual token before sending.
+<Aside type="caution">
+Before sending, replace `figd_PASTE_YOUR_TOKEN_HERE` with your actual Figma token. If you send the prompt as-is, it will configure the MCP with a broken token.
+</Aside>
 
 ### Or set it up manually
 
@@ -183,10 +193,17 @@ The Desktop Bridge plugin connects Figma to the MCP server via WebSocket. You on
 
    ![Figma Plugins menu showing Development submenu with Import plugin from manifest highlighted](/pages/ajohnson39/alexs-ai-tips/images/figma-console-mcp/figma-plugins-import-manifest.png)
 
-   Navigate to `~/.figma-console-mcp/plugin/manifest.json` and select it.
+   In the file picker, navigate to your home folder and find this file:
+
+   <FileTree>
+   - ~ (your home folder)
+     - .figma-console-mcp/
+       - plugin/
+         - **manifest.json** ← select this file
+   </FileTree>
 
    <Aside type="caution">
-   The `.figma-console-mcp` folder is hidden because it starts with a dot. In the file picker, press <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>.</kbd> to show hidden files and folders, then navigate to your home folder to find it.
+   The `.figma-console-mcp` folder is hidden because it starts with a dot. Press <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>.</kbd> in the file picker to reveal hidden files. Then click on your home folder (named after your username) and you should see it appear.
    </Aside>
 
 3. **Confirm the plugin is installed**
@@ -201,11 +218,15 @@ The Desktop Bridge plugin connects Figma to the MCP server via WebSocket. You on
 
    ![Figma search showing Figma Desktop Bridge under Recents](/pages/ajohnson39/alexs-ai-tips/images/figma-console-mcp/figma-desktop-bridge-recents.png)
 
-   You should see the **MCP ready** indicator with a green dot.
+   You should see the **MCP ready** indicator with a green dot. This means the bridge is active and your AI tool can communicate with this Figma file.
 
    ![MCP ready indicator with green status dot](/pages/ajohnson39/alexs-ai-tips/images/figma-console-mcp/mcp-ready.png)
 
 </Steps>
+
+<Aside type="caution" title="You need to run the plugin every time">
+The Desktop Bridge plugin must be running in the Figma file you want to work with. Each time you open a new file or switch files, go to **Plugins > Development > Figma Desktop Bridge** and run it again. If you don't see the green **MCP ready** dot, your AI tool won't be able to create or modify anything in that file.
+</Aside>
 
 <Aside type="tip">
 The plugin manifest path never changes between updates. Once imported, you don't need to re-import it. The bootloader automatically fetches the latest plugin code from the MCP server each time it opens.
@@ -236,6 +257,14 @@ Go to **Settings > Developer**. The `figma-console` server should show as **runn
 </Tabs>
 
 If the server isn't showing up, try quitting and reopening both your AI tool and the Figma desktop app, then run the Desktop Bridge plugin again.
+
+### Test the connection
+
+Once everything looks good, open a chat with your AI tool and ask:
+
+> Create a 400px red frame with a nested 200px blue frame inside it.
+
+If the Console MCP is working, you should see the frames appear in your open Figma file. If it fails, make sure the Desktop Bridge plugin is running (green dot visible) in the Figma file you want to work with.
 
 ## What You Can Do
 

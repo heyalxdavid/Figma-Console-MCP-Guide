@@ -109,6 +109,14 @@ claude mcp add --transport http figma-desktop http://127.0.0.1:3845/mcp
 
 You can verify it was added by running `claude mcp list`.
 
+### Verify the connection in chat
+
+Once added, start a new Claude Code session and type `/mcp` to see all connected MCP servers. You should see `figma` or `figma-desktop` listed with a green checkmark.
+
+![Claude Code /mcp command autocomplete suggestion](/pages/ajohnson39/alexs-ai-tips/images/figma-mcp/claude-code-mcp-command.png)
+
+![Claude Code /mcp output showing figma-desktop as connected](/pages/ajohnson39/alexs-ai-tips/images/figma-mcp/claude-code-mcp-connected.png)
+
 </TabItem>
 <TabItem label="Claude Desktop">
 
@@ -169,7 +177,15 @@ Once connected, you can provide Figma context to your AI assistant in two ways:
 - **Selection-based:** Select a frame or layer in the Figma desktop app, then ask your AI tool to implement your current selection.
 - **Link-based:** Copy the link to a frame or layer in Figma and paste it into the chat. The AI will extract the node ID to fetch the right design data.
 
-Example prompts:
+### Try it out
+
+A quick way to verify everything is working: open any Figma file, right-click a frame, and copy its link (**Copy/Paste as > Copy link**). Paste the link into your AI tool and ask:
+
+> Can you see this design? Describe what you see.
+
+If the MCP is connected correctly, your AI tool will describe the frame's contents, layout, and components.
+
+### More example prompts
 
 - "Implement the design I have selected in Figma"
 - "What components are in this Figma file?"
