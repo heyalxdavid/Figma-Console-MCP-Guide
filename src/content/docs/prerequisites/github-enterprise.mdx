@@ -1,0 +1,424 @@
+---
+title: GitHub Enterprise Setup
+description: Set up SSH keys and authenticate with Intuit's GitHub Enterprise so your AI agent can push code directly to your repo.
+---
+
+import { Steps, Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Intuit uses a GitHub Enterprise instance at `github.intuit.com`. If you want your AI agent (Cursor or Claude Code) to push code directly to a repo on your behalf, you need to set up SSH authentication and connect to Intuit's SSO. Without this, the agent has no way to authenticate with GitHub from the terminal.
+
+<Aside type="note" title="Do I need this?">
+This setup is **required** if you want the AI agent to commit and push code for you. Both Cursor and Claude Code run `git` commands in the terminal, which needs SSH authentication to talk to `github.intuit.com`.
+
+If you prefer to push code yourself using [GitHub Desktop](https://desktop.github.com/), you can skip this guide. GitHub Desktop handles authentication through its own OAuth flow and doesn't need SSH keys. However, your AI agent won't be able to push code on its own.
+</Aside>
+
+## Prerequisites
+
+- [Cursor](../../getting-started/cursor-setup/) or [Claude Code](../../getting-started/claude-setup/) installed
+- An Intuit GitHub Enterprise account (`github.intuit.com`) with SSO access
+- [Homebrew](../homebrew/) installed (macOS)
+
+## Installing the GitHub CLI
+
+The `gh` CLI makes it simple to create repos, manage pull requests, and authenticate without leaving the terminal.
+
+<Tabs>
+<TabItem label="Cursor">
+
+### Let AI set it up for you
+
+Open a new chat in Cursor (Agent mode) and paste this prompt:
+
+> Install the GitHub CLI with Homebrew and verify it's working.
+
+The agent will install it and confirm the version. Once it's done, skip to [Generating an SSH Key](#generating-an-ssh-key).
+
+### Or set it up manually
+
+<Steps>
+
+1. **Open the terminal in Cursor**
+
+   Press <kbd>Ctrl</kbd> + <kbd>`</kbd> to open the integrated terminal, or use the menu: **Terminal > New Terminal**.
+
+2. **Install with Homebrew**
+
+   ```bash
+   brew install gh
+   ```
+
+3. **Verify the installation**
+
+   ```bash
+   gh --version
+   ```
+
+   You should see a version number like `gh version 2.89.0` ([latest release](https://github.com/cli/cli/releases/latest)).
+
+</Steps>
+
+</TabItem>
+<TabItem label="Claude Code">
+
+### Let AI set it up for you
+
+Paste this prompt into Claude Code:
+
+> Install the GitHub CLI with Homebrew and verify it's working.
+
+Claude will run the commands and confirm the version. Once it's done, skip to [Generating an SSH Key](#generating-an-ssh-key).
+
+### Or set it up manually
+
+<Steps>
+
+1. **Open Claude Code**
+
+   Launch Claude Code in your terminal.
+
+2. **Install with Homebrew**
+
+   ```bash
+   brew install gh
+   ```
+
+3. **Verify the installation**
+
+   ```bash
+   gh --version
+   ```
+
+   You should see a version number like `gh version 2.89.0` ([latest release](https://github.com/cli/cli/releases/latest)).
+
+</Steps>
+
+</TabItem>
+</Tabs>
+
+## Generating an SSH Key
+
+SSH keys let your machine authenticate with GitHub without entering a password every time. The `gh auth login` flow will upload your public key to GitHub automatically, but you need to have one first.
+
+### Let AI set it up for you
+
+Open a new chat in Claude Code or Cursor (Agent mode) and paste this prompt. Your AI tool will check for an existing key or create one for you:
+
+> Check if I have an SSH key at `~/.ssh/id_ed25519.pub`. If not, generate one using `ssh-keygen -t ed25519` with my email as the comment.
+
+If the agent confirms you have a key (or creates one), skip to [Authenticating with GitHub Enterprise](#authenticating-with-github-enterprise).
+
+### Or set it up manually
+
+<Steps>
+
+1. **Check if you already have an SSH key**
+
+   ```bash
+   ls ~/.ssh/id_ed25519.pub
+   ```
+
+   If you see a file path printed, you already have a key and can skip to [Authenticating with GitHub Enterprise](#authenticating-with-github-enterprise).
+
+   If you see `No such file or directory`, continue to the next step.
+
+2. **Generate a new SSH key**
+
+   ```bash
+   ssh-keygen -t ed25519 -C "your.name@intuit.com"
+   ```
+
+   Replace `your.name@intuit.com` with your Intuit email address. This labels the key so you can identify it later.
+
+3. **Accept the default location**
+
+   When prompted for a file location, press <kbd>Enter</kbd> to accept the default (`~/.ssh/id_ed25519`):
+
+   ```
+   Generating public/private ed25519 key pair.
+   Enter file in which to save the key (/Users/yourname/.ssh/id_ed25519):
+   ```
+
+4. **Set a passphrase (optional)**
+
+   You'll be asked for a passphrase. You can press <kbd>Enter</kbd> twice to skip it, or set one for extra security. If you set a passphrase, you'll need to enter it the first time you use the key each session (macOS Keychain will remember it after that).
+
+   ```
+   Enter passphrase (empty for no passphrase):
+   Enter same passphrase again:
+   ```
+
+5. **Confirm the key was created**
+
+   ```bash
+   ls ~/.ssh/id_ed25519.pub
+   ```
+
+   You should now see the file path. You can also view the public key with:
+
+   ```bash
+   cat ~/.ssh/id_ed25519.pub
+   ```
+
+   It will look something like:
+
+   ```
+   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI... your.name@intuit.com
+   ```
+
+</Steps>
+
+## Authenticating with GitHub Enterprise
+
+Standard `gh auth login` defaults to `github.com`. For Intuit's enterprise instance, you need to tell it the `github.intuit.com` hostname. This triggers the SSO login flow through Intuit's identity provider.
+
+<Steps>
+
+1. **Start the login flow**
+
+   ```bash
+   gh auth login
+   ```
+
+2. **Select your account type**
+
+   When prompted "Where do you use GitHub?", choose **Other** and enter `github.intuit.com`.
+
+   ```
+   ? Where do you use GitHub?  [Use arrows to move, type to filter]
+     GitHub.com
+   > Other
+   ```
+
+   ```
+   ? GitHub hostname: github.intuit.com
+   ```
+
+   <Aside type="caution">
+   Double-check the hostname for typos. Entering `ithub.intuit.com` instead of `github.intuit.com` will fail with a connection error.
+   </Aside>
+
+3. **Choose SSH as your protocol**
+
+   Select **SSH** when asked for your preferred protocol for Git operations.
+
+   ```
+   ? What is your preferred protocol for Git operations on this host?  [Use arrows to move, type to filter]
+     HTTPS
+   > SSH
+   ```
+
+4. **Upload your SSH key**
+
+   The CLI will detect your SSH key and ask which one to upload. Select your key (usually `~/.ssh/id_ed25519.pub`) and give it a title like "Macbook" or your machine name.
+
+   ```
+   ? Upload your SSH public key to your GitHub account?  [Use arrows to move, type to filter]
+   > /Users/yourname/.ssh/id_ed25519.pub
+     Skip
+   ```
+
+   ```
+   ? Title for your SSH key: (GitHub CLI)
+   ```
+
+5. **Authenticate through Intuit SSO**
+
+   Choose **Login with a web browser**. The CLI will display a one-time code and open your browser.
+
+   ```
+   ? How would you like to authenticate GitHub CLI?  [Use arrows to move, type to filter]
+   > Login with a web browser
+     Paste an authentication token
+   ```
+
+   ```
+   ! First copy your one-time code: AB12-CD34
+   Press Enter to open github.intuit.com in your browser...
+   ```
+
+   You'll be redirected to Intuit's SSO page. Sign in with your Intuit credentials, enter the one-time code, and authorize the CLI.
+
+6. **Verify authentication**
+
+   ```bash
+   gh auth status
+   ```
+
+   You should see output confirming your account and active session:
+
+   ```
+   github.intuit.com
+     ✓ Logged in to github.intuit.com account yourname (keyring)
+     - Active account: true
+     - Git operations protocol: ssh
+   ```
+
+</Steps>
+
+<Aside type="note">
+Your SSO session may expire periodically. If you see authentication errors after some time, run `gh auth login` again and re-authenticate through SSO.
+</Aside>
+
+## Initializing Git and Pushing to a New Repo
+
+Once authenticated, you can create a repo and push your project in a few commands.
+
+<Tabs>
+<TabItem label="Cursor">
+
+### Let AI set it up for you
+
+Open a new chat in Cursor (Agent mode) and paste this prompt:
+
+> Initialize git in this project, commit all files, and create a new public repo called `my-project` on `github.intuit.com` using the gh CLI. Use `GH_HOST=github.intuit.com` when running `gh repo create`.
+
+### Or set it up manually
+
+<Steps>
+
+1. **Initialize git in your project**
+
+   ```bash
+   git init
+   git add -A
+   ```
+
+2. **Rename the default branch to `main`**
+
+   ```bash
+   git branch -m main
+   ```
+
+3. **Make your initial commit**
+
+   ```bash
+   git commit -m "Initial commit"
+   ```
+
+4. **Create the repo on GitHub Enterprise and push**
+
+   The `GH_HOST` environment variable tells the CLI to target Intuit's GitHub instance:
+
+   ```bash
+   GH_HOST=github.intuit.com gh repo create your-repo-name \
+     --public \
+     --description "Your project description" \
+     --source . \
+     --push
+   ```
+
+   This creates the repo under your account, sets up the `origin` remote, and pushes your code in one step.
+
+5. **Verify on GitHub**
+
+   Visit `https://github.intuit.com/yourname/your-repo-name` to confirm everything landed.
+
+</Steps>
+
+<Aside type="tip">
+After the initial push, Cursor's built-in **Source Control** panel (<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>G</kbd>) gives you a visual interface for staging, committing, and pushing changes without using the terminal.
+</Aside>
+
+</TabItem>
+<TabItem label="Claude Code">
+
+### Let AI set it up for you
+
+Paste this prompt into Claude Code:
+
+> Initialize git in this project, commit all files, and create a new public repo called `my-project` on `github.intuit.com` using the gh CLI. Use `GH_HOST=github.intuit.com` when running `gh repo create`.
+
+### Or set it up manually
+
+<Steps>
+
+1. **Initialize git in your project**
+
+   ```bash
+   git init
+   git add -A
+   ```
+
+2. **Rename the default branch to `main`**
+
+   ```bash
+   git branch -m main
+   ```
+
+3. **Make your initial commit**
+
+   ```bash
+   git commit -m "Initial commit"
+   ```
+
+4. **Create the repo on GitHub Enterprise and push**
+
+   The `GH_HOST` environment variable tells the CLI to target Intuit's GitHub instance:
+
+   ```bash
+   GH_HOST=github.intuit.com gh repo create your-repo-name \
+     --public \
+     --description "Your project description" \
+     --source . \
+     --push
+   ```
+
+5. **Verify on GitHub**
+
+   Visit `https://github.intuit.com/yourname/your-repo-name` to confirm everything landed.
+
+</Steps>
+
+<Aside type="tip">
+After the initial push, you can ask Claude to commit and push changes for you at any time. Just say "commit and push my changes" and Claude will handle it.
+</Aside>
+
+</TabItem>
+</Tabs>
+
+## Enterprise Workflow Validation
+
+Intuit's GitHub Enterprise enforces rules on CI workflow files. Every workflow requires a `validation` job that references a specific reusable workflow.
+
+If your push is rejected with a message like:
+
+```
+The IBP 'validation' job is required in this workflow.
+```
+
+Add the required validation job to your `.github/workflows/*.yml` files:
+
+```yaml
+jobs:
+  validation:
+    uses: actions-intuit/ibp-wf/.github/workflows/validation.yml@v1
+
+  build:
+    needs: validation
+    runs-on: ubuntu-latest
+    steps:
+      # your build steps...
+```
+
+Key points:
+
+- The `validation` job must be present in every workflow file
+- All other jobs must include `needs: validation`
+- The `uses` field must point to the exact reusable workflow your org requires
+
+<Aside>
+Check with your platform team for the specific reusable workflow URL. The example above uses Intuit's IBP validation workflow.
+</Aside>
+
+## Troubleshooting
+
+- **"error connecting to hostname"**: Check for typos in the hostname. Run `gh auth login` again with the correct enterprise URL.
+- **"Bad credentials" (HTTP 401)**: Your SSO token may be expired. Re-authenticate with `gh auth login` and sign in through Intuit SSO again.
+- **"pre-receive hook declined"**: Intuit's GitHub has push rules. Read the error message carefully; it usually tells you exactly what's missing from your workflow files (typically the IBP validation job).
+- **SSH key not found**: Follow the [Generating an SSH Key](#generating-an-ssh-key) section above, then try the login flow again.
+- **SSO session expired**: If commands suddenly stop working after a period of time, your Intuit SSO session has expired. Run `gh auth login` to re-authenticate.
+
+## Next Steps
+
+Now that your project is on GitHub Enterprise, check out the [Intuit Resources](../../getting-started/intuit-resources/) page for more tools and guides available to Intuit engineers.

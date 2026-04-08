@@ -37,10 +37,11 @@ export default defineConfig({
           ],
         },
         {
-          label: 'Prerequisites',
+          label: 'Development Setup',
           items: [
             { slug: 'prerequisites/homebrew' },
             { slug: 'prerequisites/nodejs' },
+            { slug: 'prerequisites/github-enterprise' },
           ],
         },
         {
@@ -57,7 +58,6 @@ export default defineConfig({
         {
           label: 'Resources',
           items: [
-            { slug: 'getting-started/github-enterprise' },
             { slug: 'getting-started/intuit-resources' },
           ],
         },
