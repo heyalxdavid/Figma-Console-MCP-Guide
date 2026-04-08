@@ -1,90 +1,187 @@
 ---
 title: Adding Figma MCP
-description: Connect Figma to Cursor so your AI assistant can read your design files.
+description: The Figma MCP server gives AI tools direct access to your design files. Learn how to set it up with Claude CLI, Claude Desktop, or Cursor.
 ---
 
-import { Steps, FileTree } from '@astrojs/starlight/components';
+import { Steps, FileTree, Aside, Tabs, TabItem } from '@astrojs/starlight/components';
 
-The Figma MCP server lets Cursor's AI assistant read your Figma designs directly. It can inspect layers, extract design tokens, read component properties, and understand your design files without you needing to describe them manually.
+The Figma MCP (Model Context Protocol) server gives your AI assistant direct access to your Figma designs. It can inspect layers, extract design tokens, read component properties, and understand your design files without you needing to describe them manually. Below we'll walk through how to set it up with your preferred AI tool.
 
-## Prerequisites
+## Step 1: Enable the MCP Server in Figma
 
-- [Cursor installed](../cursor-setup/)
-- A Figma account with access to at least one design file
-- A Figma personal access token
-
-## Getting Your Figma Access Token
+Before connecting any AI tool, you need to turn on the MCP server in the Figma desktop app.
 
 <Steps>
 
-1. **Open Figma settings**
+1. **Open the Figma desktop app**
 
-   Go to [figma.com](https://www.figma.com/), click your avatar in the top-left, and select **Settings**.
+   Make sure you have the [Figma desktop app](https://www.figma.com/downloads/) installed and updated to the latest version.
 
-2. **Generate a personal access token**
+2. **Open a design file and switch to Dev Mode**
 
-   Scroll to the **Personal access tokens** section and click **Generate new token**. Give it a descriptive name like "Cursor MCP".
+   Create or open a Figma Design file, then toggle to **Dev Mode** using the switch in the toolbar at the bottom (or press <kbd>Shift</kbd> + <kbd>D</kbd>).
 
-3. **Copy the token**
+3. **Enable the desktop MCP server**
 
-   Copy the token immediately. You won't be able to see it again after closing the dialog.
+   In the **MCP server** section of the inspect panel, click **Enable desktop MCP server**. You should see a confirmation message that the server is running.
+
+   ![Figma Dev Mode MCP server settings showing Enable Code Connect and Disable MCP server options](/pages/ajohnson39/alexs-ai-tips/images/figma-mcp/figma-dev-mode-mcp.png)
 
 </Steps>
 
-## Adding the MCP Server to Cursor
+<Aside type="tip">
+The desktop MCP server runs locally at `http://127.0.0.1:3845/mcp`.
+</Aside>
+
+## Step 2: Connect Your AI Tool
+
+<Tabs>
+<TabItem label="Cursor">
+
+### Let AI set it up for you
+
+Open a new chat in Cursor (Agent mode) and paste this prompt:
+
+> Add the Figma desktop MCP server to my mcp.json. The server URL is `http://127.0.0.1:3845/mcp` and the server name should be `figma-desktop`. Here are the Figma docs for reference: https://developers.figma.com/docs/figma-mcp-server/local-server-installation/
+
+The agent will edit your `mcp.json` for you. Once it's done, verify the connection in your MCP settings (see step 3 below).
+
+### Or set it up manually
 
 <Steps>
 
-1. **Open MCP settings**
+1. **Open the MCP settings**
 
-   In Cursor, go to **Settings > MCP** (or open the command palette and search for "MCP").
+   Open the command palette with <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd> and search for **MCP**.
+
+   ![Command palette showing MCP search results](/pages/ajohnson39/alexs-ai-tips/images/figma-mcp/command-palette-mcp.png)
+
+   Select **Cursor Settings: Tools & MCPs**.
+
+   ![Cursor Settings sidebar with Tools & MCPs selected](/pages/ajohnson39/alexs-ai-tips/images/figma-mcp/cursor-tools-mcps.png)
+
+   You can also get there from the menu bar: **Cursor > Settings... > Cursor Settings**, then select **Tools & MCPs** in the sidebar.
+
+   ![Cursor menu showing Settings path](/pages/ajohnson39/alexs-ai-tips/images/figma-mcp/cursor-settings-menu.png)
 
 2. **Add a new MCP server**
 
-   Click **Add new global MCP server** and paste the following configuration:
+   Click **New MCP Server**.
+
+   ![New MCP Server button](/pages/ajohnson39/alexs-ai-tips/images/figma-mcp/new-mcp-server.png)
+
+   This opens your `mcp.json` file. Add the Figma desktop server configuration:
 
    ```json
    {
      "mcpServers": {
-       "Figma": {
-         "command": "npx",
-         "args": [
-           "-y",
-           "figma-developer-mcp",
-           "--stdio"
-         ],
-         "env": {
-           "FIGMA_API_KEY": "your-token-here"
-         }
+       "figma-desktop": {
+         "url": "http://127.0.0.1:3845/mcp"
        }
      }
    }
    ```
 
-   Replace `your-token-here` with the personal access token you copied earlier.
+   Your `mcp.json` may already have other MCP servers listed. Just add the `"figma-desktop"` entry inside the existing `"mcpServers"` object.
 
 3. **Verify the connection**
 
-   After saving, you should see the Figma MCP server listed as connected in your MCP settings. The indicator should turn green.
+   After saving, you should see the Figma MCP server listed with a green indicator in your MCP settings.
+
+   ![Figma MCP connected with green indicator](/pages/ajohnson39/alexs-ai-tips/images/figma-mcp/figma-mcp-connected.png)
 
 </Steps>
 
+</TabItem>
+<TabItem label="Claude Code (CLI)">
+
+### Let AI set it up for you
+
+Paste this prompt into Claude Code:
+
+> Add the Figma desktop MCP server. Run this command: `claude mcp add --transport http figma-desktop http://127.0.0.1:3845/mcp`. Here are the Figma docs for reference: https://developers.figma.com/docs/figma-mcp-server/local-server-installation/
+
+### Or run it yourself
+
+```bash
+claude mcp add --transport http figma-desktop http://127.0.0.1:3845/mcp
+```
+
+You can verify it was added by running `claude mcp list`.
+
+</TabItem>
+<TabItem label="Claude Desktop">
+
+### Let AI set it up for you
+
+Paste this prompt into Claude Desktop:
+
+> I need to add the Figma desktop MCP server to my Claude Desktop config. The server URL is `http://127.0.0.1:3845/mcp` and the server name should be `figma-desktop`. Can you show me exactly what to add to my `claude_desktop_config.json`? I can find it at **Settings > Developer > Edit Config**. Here are the Figma docs for reference: https://developers.figma.com/docs/figma-mcp-server/local-server-installation/
+
+Claude will walk you through the steps below.
+
+### Or set it up manually
+
+Claude Desktop has two places that relate to Figma. Make sure you use the right one:
+
+- **Connectors** is for the remote Figma MCP server (connects directly to Figma's cloud). You don't need the Figma desktop app for this.
+- **Developer** is where you add local MCP servers, including the Figma desktop MCP server.
+
+![Claude Desktop Connectors page showing Figma as an Interactive connector](/pages/ajohnson39/alexs-ai-tips/images/figma-mcp/claude-desktop-connectors.png)
+
+![Claude Desktop Developer page showing Local MCP servers](/pages/ajohnson39/alexs-ai-tips/images/figma-mcp/claude-desktop-developer.png)
+
+To connect the **desktop** MCP server:
+
+<Steps>
+
+1. **Open Settings**
+
+   In Claude Desktop, go to **Settings > Developer > Edit Config**.
+
+2. **Add the Figma MCP server**
+
+   Add the following to your `claude_desktop_config.json`:
+
+   ```json
+   {
+     "mcpServers": {
+       "figma-desktop": {
+         "url": "http://127.0.0.1:3845/mcp"
+       }
+     }
+   }
+   ```
+
+3. **Restart Claude Desktop**
+
+   Restart Claude Desktop for the new server to take effect. You should see the Figma server listed as **running** in **Settings > Developer**.
+
+</Steps>
+
+</TabItem>
+</Tabs>
+
 ## Using It
 
-Once connected, you can paste a Figma file URL into the Cursor chat and ask the AI to analyze it. For example:
+Once connected, you can provide Figma context to your AI assistant in two ways:
 
+- **Selection-based:** Select a frame or layer in the Figma desktop app, then ask your AI tool to implement your current selection.
+- **Link-based:** Copy the link to a frame or layer in Figma and paste it into the chat. The AI will extract the node ID to fetch the right design data.
+
+Example prompts:
+
+- "Implement the design I have selected in Figma"
 - "What components are in this Figma file?"
 - "Extract the color palette from this design"
 - "Describe the layout of this frame"
 
-The AI will use the MCP server to fetch the design data and respond with accurate information from your actual file.
-
 ## Troubleshooting
 
-- **Token expired:** Figma tokens don't expire by default, but if you revoked it, generate a new one and update your MCP config.
-- **Connection failed:** Make sure you have Node.js installed (`node --version` in the terminal). The MCP server runs via `npx`.
-- **Permission errors:** Ensure your token has access to the files you're trying to read.
+- **Connection failed:** Make sure the Figma desktop app is open and the MCP server is enabled in Dev Mode. The server must be running for your AI tool to connect.
+- **No tools showing:** If your AI tool doesn't list any Figma tools, restart both the Figma desktop app and your AI tool.
+- **Permission errors:** Ensure your Figma account has access to the files you're trying to read.
 
 ## Next Steps
 
-Continue to the [Figma Console MCP guide](../figma-console-mcp/) to add the ability to create and modify designs from Cursor.
+Continue to the [Figma Console MCP guide](../figma-console-mcp/) to add the ability to create and modify designs directly from your AI tool.

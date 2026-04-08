@@ -1,79 +1,262 @@
 ---
 title: Adding Figma Console MCP
-description: Set up Joey Banks' Figma Console MCP to create and modify designs from Cursor.
+description: The Figma Console MCP lets your AI assistant create and modify designs directly in Figma. Learn how to set it up with Cursor, Claude Code, or Claude Desktop.
 ---
 
-import { Steps, FileTree } from '@astrojs/starlight/components';
+import { Steps, FileTree, Aside, Tabs, TabItem } from '@astrojs/starlight/components';
 
-The Figma Console MCP (by [Joey Banks / southleft](https://github.com/southleft/figma-console-mcp)) goes beyond reading designs. It lets Cursor's AI assistant execute Figma Plugin API code directly, so it can create frames, add text, modify styles, search components, and even work with FigJam boards.
+The Figma Console MCP (by [southleft](https://github.com/southleft/figma-console-mcp)) goes beyond reading designs. It lets your AI assistant execute Figma Plugin API code directly, so it can create frames, add text, modify styles, search components, manage variables, and even work with FigJam boards. Below we'll walk through how to set it up with your preferred AI tool.
 
-## Prerequisites
+<Aside type="note">
+Unlike the [standard Figma MCP](../figma-mcp/) which reads files via the Figma REST API, the Console MCP works through a **Desktop Bridge plugin** that runs inside Figma. This gives your AI full read and write access to your open Figma file.
+</Aside>
 
-- [Cursor installed](../cursor-setup/)
-- [Figma MCP configured](../figma-mcp/) (recommended but not required)
-- Figma Desktop app installed
+<Aside type="caution" title="Prerequisites">
+Before setting up the Console MCP, make sure you have:
 
-## How It Works
+- The [Figma MCP](../figma-mcp/) set up first
+- [Homebrew](../../prerequisites/homebrew/) installed
+- [Node.js](../../prerequisites/nodejs/) (v18+) installed
+</Aside>
 
-Unlike the standard Figma MCP (which reads files via the Figma REST API), the Console MCP works through a **Desktop Bridge plugin** that runs inside Figma. The bridge creates a WebSocket connection between Figma and the MCP server, letting the AI execute code in the context of your open Figma file.
+## Step 1: Get Your Figma API Token
 
-## Setup
+The Console MCP requires a Figma personal access token to connect to the Figma API.
 
 <Steps>
 
-1. **Install the MCP server**
+1. **Open Account settings**
 
-   Add the Figma Console MCP to your Cursor MCP settings. Go to **Settings > MCP** and add:
+   In the Figma desktop app, go to the main menu and select **Help and account > Account settings**.
+
+   ![Figma menu showing Help and account with Account settings highlighted](/pages/ajohnson39/alexs-ai-tips/images/figma-console-mcp/figma-account-settings.png)
+
+2. **Generate a new token**
+
+   Scroll down to the **Personal access tokens** section and click **Generate new token**.
+
+   ![Personal access tokens section with Generate new token link](/pages/ajohnson39/alexs-ai-tips/images/figma-console-mcp/figma-personal-access-tokens.png)
+
+3. **Name it and check all scopes**
+
+   Give it a name like `Console MCP` and **check all the scope options**. This gives the Console MCP full access to read and write to your files, variables, and components.
+
+   ![Generate new token dialog showing all scopes checked](/pages/ajohnson39/alexs-ai-tips/images/figma-console-mcp/figma-token-scopes.png)
+
+4. **Copy and save the token**
+
+   Click **Generate token** and copy it immediately. You won't see it again after closing the dialog. Save it somewhere safe (like a password manager or a secure note) so you can refer to it later. Your token should start with `figd_`.
+
+</Steps>
+
+## Step 2: Install the MCP Server
+
+The Console MCP runs via NPX, which means it auto-updates to the latest version each time it starts.
+
+<Tabs>
+<TabItem label="Cursor">
+
+### Let AI set it up for you
+
+Open a new chat in Cursor (Agent mode) and paste this prompt:
+
+> Add the Figma Console MCP server to my mcp.json. Use the NPX setup with the command `npx` and args `["-y", "figma-console-mcp@latest"]`. I need two environment variables: `FIGMA_ACCESS_TOKEN` set to `figd_PASTE_YOUR_TOKEN_HERE` and `ENABLE_MCP_APPS` set to `true`. The server name should be `figma-console`. Here are the docs for reference: https://docs.figma-console-mcp.southleft.com/setup
+
+Replace `figd_PASTE_YOUR_TOKEN_HERE` with your actual token before sending.
+
+### Or set it up manually
+
+<Steps>
+
+1. **Open the MCP settings**
+
+   Open the command palette with <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd>, search for **MCP**, and select **Cursor Settings: Tools & MCPs**.
+
+2. **Add a new MCP server**
+
+   Click **New MCP Server**. This opens your `mcp.json` file. Add the Figma Console configuration:
 
    ```json
    {
      "mcpServers": {
        "figma-console": {
          "command": "npx",
-         "args": [
-           "-y",
-           "@anthropic/figma-console-mcp"
-         ]
+         "args": ["-y", "figma-console-mcp@latest"],
+         "env": {
+           "FIGMA_ACCESS_TOKEN": "figd_YOUR_TOKEN_HERE",
+           "ENABLE_MCP_APPS": "true"
+         }
        }
      }
    }
    ```
 
-   :::note
-   Check the [official repo](https://github.com/southleft/figma-console-mcp) for the latest package name and installation instructions, as these may change.
-   :::
+   Replace `figd_YOUR_TOKEN_HERE` with your actual token. If your `mcp.json` already has other servers, add the `"figma-console"` entry inside the existing `"mcpServers"` object.
 
-2. **Install the Desktop Bridge plugin in Figma**
+3. **Verify the connection**
 
-   Open Figma Desktop, go to **Plugins > Development > Import plugin from manifest**, and point it to the bridge plugin included with the MCP server. Alternatively, search the Figma Community for "Desktop Bridge."
-
-3. **Run the bridge plugin**
-
-   Open the Figma file you want to work with, then run the Desktop Bridge plugin from **Plugins > Development > Figma Desktop Bridge**. The plugin will connect to the MCP server.
-
-4. **Verify in Cursor**
-
-   Back in Cursor, check your MCP settings. The Figma Console MCP should show as connected. You can test it by asking the AI to describe what's on the current Figma page.
+   After saving, you should see the Figma Console MCP server listed with a green indicator in your MCP settings.
 
 </Steps>
 
+</TabItem>
+<TabItem label="Claude Code (CLI)">
+
+### Let AI set it up for you
+
+Paste this prompt into Claude Code:
+
+> Add the Figma Console MCP server. Run this command: `claude mcp add figma-console -s user -e FIGMA_ACCESS_TOKEN=figd_PASTE_YOUR_TOKEN_HERE -e ENABLE_MCP_APPS=true -- npx -y figma-console-mcp@latest`. Here are the docs for reference: https://docs.figma-console-mcp.southleft.com/setup
+
+Replace `figd_PASTE_YOUR_TOKEN_HERE` with your actual token before sending.
+
+### Or run it yourself
+
+```bash
+claude mcp add figma-console -s user -e FIGMA_ACCESS_TOKEN=figd_YOUR_TOKEN_HERE -e ENABLE_MCP_APPS=true -- npx -y figma-console-mcp@latest
+```
+
+The `-s user` flag makes it available across all your projects. You can verify it was added by running `claude mcp list`.
+
+</TabItem>
+<TabItem label="Claude Desktop">
+
+### Let AI set it up for you
+
+Paste this prompt into Claude Desktop:
+
+> I need to add the Figma Console MCP server to my Claude Desktop config. The setup uses command `npx` with args `["-y", "figma-console-mcp@latest"]` and two env vars: `FIGMA_ACCESS_TOKEN` set to `figd_PASTE_YOUR_TOKEN_HERE` and `ENABLE_MCP_APPS` set to `true`. The server name should be `figma-console`. Can you show me exactly what to add to my config? I can find it at **Settings > Developer > Edit Config**. Here are the docs for reference: https://docs.figma-console-mcp.southleft.com/setup
+
+Replace `figd_PASTE_YOUR_TOKEN_HERE` with your actual token before sending.
+
+### Or set it up manually
+
+<Steps>
+
+1. **Open Settings**
+
+   In Claude Desktop, go to **Settings > Developer > Edit Config**.
+
+2. **Add the Figma Console MCP server**
+
+   Add the following to your `claude_desktop_config.json`:
+
+   ```json
+   {
+     "mcpServers": {
+       "figma-console": {
+         "command": "npx",
+         "args": ["-y", "figma-console-mcp@latest"],
+         "env": {
+           "FIGMA_ACCESS_TOKEN": "figd_YOUR_TOKEN_HERE",
+           "ENABLE_MCP_APPS": "true"
+         }
+       }
+     }
+   }
+   ```
+
+   Replace `figd_YOUR_TOKEN_HERE` with your actual token.
+
+3. **Restart Claude Desktop**
+
+   Restart Claude Desktop for the new server to take effect. You should see the Figma Console server listed as **running** in **Settings > Developer**.
+
+</Steps>
+
+</TabItem>
+</Tabs>
+
+## Step 3: Install the Desktop Bridge Plugin
+
+The Desktop Bridge plugin connects Figma to the MCP server via WebSocket. You only need to do this once. The plugin uses a bootloader that auto-updates, so it always stays current.
+
+<Steps>
+
+1. **Run the MCP server once**
+
+   Start (or restart) your AI tool so the MCP server runs at least once. This copies the plugin files to `~/.figma-console-mcp/plugin/` on your machine.
+
+2. **Import the plugin in Figma**
+
+   Open Figma Desktop and go to **Plugins > Development > Import plugin from manifest...**.
+
+   ![Figma Plugins menu showing Development submenu with Import plugin from manifest highlighted](/pages/ajohnson39/alexs-ai-tips/images/figma-console-mcp/figma-plugins-import-manifest.png)
+
+   Navigate to `~/.figma-console-mcp/plugin/manifest.json` and select it.
+
+   <Aside type="caution">
+   The `.figma-console-mcp` folder is hidden because it starts with a dot. In the file picker, press <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>.</kbd> to show hidden files and folders, then navigate to your home folder to find it.
+   </Aside>
+
+3. **Confirm the plugin is installed**
+
+   You should see **Figma Desktop Bridge** in your development plugins list.
+
+   ![Figma Plugins and widgets panel showing Figma Desktop Bridge installed](/pages/ajohnson39/alexs-ai-tips/images/figma-console-mcp/figma-desktop-bridge-plugin.png)
+
+4. **Run the plugin**
+
+   Open the Figma file you want to work with, then run the plugin from **Plugins > Development > Figma Desktop Bridge** (or search for it).
+
+   ![Figma search showing Figma Desktop Bridge under Recents](/pages/ajohnson39/alexs-ai-tips/images/figma-console-mcp/figma-desktop-bridge-recents.png)
+
+   You should see the **MCP ready** indicator with a green dot.
+
+   ![MCP ready indicator with green status dot](/pages/ajohnson39/alexs-ai-tips/images/figma-console-mcp/mcp-ready.png)
+
+</Steps>
+
+<Aside type="tip">
+The plugin manifest path never changes between updates. Once imported, you don't need to re-import it. The bootloader automatically fetches the latest plugin code from the MCP server each time it opens.
+</Aside>
+
+## Step 4: Restart and Verify
+
+After completing the setup, restart both your AI tool and Figma Desktop to make sure everything connects properly.
+
+<Tabs>
+<TabItem label="Cursor">
+
+Check **Settings > Tools & MCPs**. You should see `figma-console` with a green indicator and the tools count.
+
+![Figma Console MCP connected in Cursor showing 98 tools and 2 resources enabled](/pages/ajohnson39/alexs-ai-tips/images/figma-console-mcp/cursor-figma-console-connected.png)
+
+</TabItem>
+<TabItem label="Claude Code (CLI)">
+
+Type `/mcp` in Claude Code to see your connected servers. The `figma-console` server should show as connected.
+
+</TabItem>
+<TabItem label="Claude Desktop">
+
+Go to **Settings > Developer**. The `figma-console` server should show as **running**.
+
+</TabItem>
+</Tabs>
+
+If the server isn't showing up, try quitting and reopening both your AI tool and the Figma desktop app, then run the Desktop Bridge plugin again.
+
 ## What You Can Do
 
-With the Figma Console MCP connected, you can ask Cursor to:
+With the Figma Console MCP connected, you can ask your AI to:
 
 - **Create frames and shapes:** "Create a 1440x900 frame with a 16px grid"
 - **Add and style text:** "Add a heading that says 'Dashboard' using Inter Bold 32px"
 - **Search components:** "Find all button components in this file"
 - **Modify properties:** "Change the fill color of the selected element to #3B82F6"
+- **Manage variables:** "Create a color variable collection with primary and secondary colors"
 - **Take screenshots:** "Take a screenshot of the current page"
 - **Work with FigJam:** Create sticky notes, flowcharts, tables, and more on FigJam boards
 
 ## Troubleshooting
 
 - **Bridge not connecting:** Make sure you're using Figma Desktop (not the browser version). The bridge plugin requires the desktop app.
-- **Plugin not found:** If you can't find the bridge plugin, try reinstalling from the official repo or Figma Community.
-- **Commands failing:** The AI executes Figma Plugin API code. Some operations require specific node selections or page context. Try selecting the target element first.
+- **Plugin path doesn't exist:** Make sure the MCP server has run at least once so it copies the plugin files to `~/.figma-console-mcp/plugin/`.
+- **Token errors:** Your token must start with `figd_`. If it doesn't, regenerate it from your Figma settings.
+- **Commands failing:** Some operations require specific node selections or page context. Try selecting the target element in Figma first.
+- **Node.js required:** The Console MCP runs via NPX, which requires Node.js 18+. Check with `node --version` in your terminal.
 
 ## Next Steps
 
-Continue to the [GitHub Enterprise guide](../github-enterprise/) to push your project to your company's GitHub, or explore the [Skills library](../../skills/) to add more capabilities to your Cursor setup.
+Continue to the [GitHub Enterprise guide](../github-enterprise/) to push your project to your company's GitHub, or explore the [Skills library](../../skills/) to add more capabilities to your setup.

@@ -1,0 +1,82 @@
+---
+title: Installing Node.js
+description: Install Node.js the right way using NVM (Node Version Manager) via Homebrew.
+---
+
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+Node.js is required by the Figma Console MCP and many other MCP servers that run via NPX. The recommended way to install it is through **NVM** (Node Version Manager), which lets you easily switch between Node versions if needed.
+
+<Aside type="note">
+NVM requires [Homebrew](../homebrew/). If you don't have Homebrew yet, install that first.
+</Aside>
+
+## Check if you already have it
+
+Open **Terminal** and run:
+
+```
+node --version
+```
+
+If you see `v18.x.x` or higher, you're all set. If your version is below 18 and you already have NVM, you can update by running:
+
+```
+nvm install --lts
+```
+
+If you see "command not found", follow the full setup steps below.
+
+## Let AI set it up for you
+
+If you're using Claude Code or Cursor, paste this prompt and let AI handle the installation:
+
+> Install Node.js on my Mac using NVM. First install NVM via Homebrew with `brew install nvm`, create the `~/.nvm` directory, add the NVM config to my `~/.zshrc`, reload it with `source ~/.zshrc`, then install the latest LTS version with `nvm install --lts`. Verify it works with `node --version`.
+
+## Or install it manually
+
+<Steps>
+
+1. **Install NVM using Homebrew**
+
+   ```
+   brew install nvm
+   ```
+
+2. **Create the NVM directory**
+
+   ```
+   mkdir ~/.nvm
+   ```
+
+3. **Add NVM to your shell config**
+
+   After installing NVM, Homebrew will print setup instructions in your terminal. Look for the lines it tells you to add to your `~/.zshrc` file and follow those instructions.
+
+   If you missed them, run `brew info nvm` to see the instructions again.
+
+4. **Reload your terminal**
+
+   ```
+   source ~/.zshrc
+   ```
+
+5. **Install the latest LTS version of Node.js**
+
+   ```
+   nvm install --lts
+   ```
+
+6. **Verify it's working**
+
+   ```
+   node --version
+   ```
+
+   You should see something like `v22.x.x` or higher.
+
+</Steps>
+
+## Next Steps
+
+Once Node.js is installed, continue to the [Figma Console MCP guide](../../getting-started/figma-console-mcp/) to set up the Console MCP.

@@ -7,7 +7,16 @@ export default defineConfig({
   base: '/pages/ajohnson39/alexs-ai-tips',
   integrations: [
     starlight({
-      plugins: [starlightThemeBlack({})],
+      plugins: [
+        starlightThemeBlack({
+          navLinks: [
+            {
+              label: 'Docs',
+              link: '/getting-started/cursor-setup',
+            },
+          ],
+        }),
+      ],
       title: "Alex's AI Tips",
       description:
         'A getting-started guide for designers working with AI tools, MCPs, and Cursor.',
@@ -21,17 +30,36 @@ export default defineConfig({
       sidebar: [
         { label: 'Home', link: '/' },
         {
-          label: 'Getting Started',
+          label: 'AI Tools',
           items: [
             { slug: 'getting-started/cursor-setup' },
+            { slug: 'getting-started/claude-setup' },
+          ],
+        },
+        {
+          label: 'Prerequisites',
+          items: [
+            { slug: 'prerequisites/homebrew' },
+            { slug: 'prerequisites/nodejs' },
+          ],
+        },
+        {
+          label: 'Figma MCPs',
+          items: [
             { slug: 'getting-started/figma-mcp' },
             { slug: 'getting-started/figma-console-mcp' },
-            { slug: 'getting-started/github-enterprise' },
           ],
         },
         {
           label: 'Skills',
           autogenerate: { directory: 'skills' },
+        },
+        {
+          label: 'Resources',
+          items: [
+            { slug: 'getting-started/github-enterprise' },
+            { slug: 'getting-started/intuit-resources' },
+          ],
         },
       ],
       customCss: ['./src/styles/custom.css'],
