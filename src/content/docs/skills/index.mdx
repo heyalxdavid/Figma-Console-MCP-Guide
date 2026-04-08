@@ -1,0 +1,70 @@
+---
+title: Skills
+description: What are Cursor skills and how to install them.
+---
+
+import { Steps, FileTree } from '@astrojs/starlight/components';
+
+Skills are instruction files that teach Cursor's AI assistant how to handle specific tasks. Think of them as specialized knowledge packs. Instead of explaining the same process every time you chat with Cursor, you install a skill once and the AI follows those instructions automatically when the task comes up.
+
+## How Skills Work
+
+A skill is a `SKILL.md` file that contains structured instructions. When you install a skill into your Cursor setup, the AI reads it and applies the guidance whenever a matching task is detected. For example, a "design system styleguide" skill would automatically kick in when you ask Cursor to generate a styleguide.
+
+Skills live in your `~/.cursor/skills/` directory:
+
+<FileTree>
+- ~/.cursor/
+  - skills/
+    - my-skill/
+      - SKILL.md
+    - another-skill/
+      - SKILL.md
+</FileTree>
+
+## Installing a Skill
+
+<Steps>
+
+1. **Find a skill**
+
+   Browse the skill pages in this section or find a skill repo on GitHub.
+
+2. **Clone or download**
+
+   Clone the skill repository or download the `SKILL.md` file.
+
+   ```bash
+   git clone https://github.com/username/skill-name.git ~/.cursor/skills/skill-name
+   ```
+
+3. **Verify installation**
+
+   The skill is active immediately. No restart needed. You can verify by asking Cursor: "What skills do you have available?"
+
+</Steps>
+
+## Creating Your Own Skills
+
+A `SKILL.md` file is plain markdown with a specific structure:
+
+```markdown
+# Skill Name
+
+Description of what this skill does and when it should trigger.
+
+## When to Use
+
+- Trigger condition 1
+- Trigger condition 2
+
+## Instructions
+
+Step-by-step guidance for the AI to follow.
+```
+
+The key is to be specific about **when** the skill should activate and **what** the AI should do. The more precise your instructions, the more reliably the skill will perform.
+
+## Available Skills
+
+Browse the sidebar for individual skill guides with installation instructions and usage details.

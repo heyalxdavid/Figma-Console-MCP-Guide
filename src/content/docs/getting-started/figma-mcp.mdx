@@ -1,0 +1,90 @@
+---
+title: Adding Figma MCP
+description: Connect Figma to Cursor so your AI assistant can read your design files.
+---
+
+import { Steps, FileTree } from '@astrojs/starlight/components';
+
+The Figma MCP server lets Cursor's AI assistant read your Figma designs directly. It can inspect layers, extract design tokens, read component properties, and understand your design files without you needing to describe them manually.
+
+## Prerequisites
+
+- [Cursor installed](/getting-started/cursor-setup/)
+- A Figma account with access to at least one design file
+- A Figma personal access token
+
+## Getting Your Figma Access Token
+
+<Steps>
+
+1. **Open Figma settings**
+
+   Go to [figma.com](https://www.figma.com/), click your avatar in the top-left, and select **Settings**.
+
+2. **Generate a personal access token**
+
+   Scroll to the **Personal access tokens** section and click **Generate new token**. Give it a descriptive name like "Cursor MCP".
+
+3. **Copy the token**
+
+   Copy the token immediately. You won't be able to see it again after closing the dialog.
+
+</Steps>
+
+## Adding the MCP Server to Cursor
+
+<Steps>
+
+1. **Open MCP settings**
+
+   In Cursor, go to **Settings > MCP** (or open the command palette and search for "MCP").
+
+2. **Add a new MCP server**
+
+   Click **Add new global MCP server** and paste the following configuration:
+
+   ```json
+   {
+     "mcpServers": {
+       "Figma": {
+         "command": "npx",
+         "args": [
+           "-y",
+           "figma-developer-mcp",
+           "--stdio"
+         ],
+         "env": {
+           "FIGMA_API_KEY": "your-token-here"
+         }
+       }
+     }
+   }
+   ```
+
+   Replace `your-token-here` with the personal access token you copied earlier.
+
+3. **Verify the connection**
+
+   After saving, you should see the Figma MCP server listed as connected in your MCP settings. The indicator should turn green.
+
+</Steps>
+
+## Using It
+
+Once connected, you can paste a Figma file URL into the Cursor chat and ask the AI to analyze it. For example:
+
+- "What components are in this Figma file?"
+- "Extract the color palette from this design"
+- "Describe the layout of this frame"
+
+The AI will use the MCP server to fetch the design data and respond with accurate information from your actual file.
+
+## Troubleshooting
+
+- **Token expired:** Figma tokens don't expire by default, but if you revoked it, generate a new one and update your MCP config.
+- **Connection failed:** Make sure you have Node.js installed (`node --version` in the terminal). The MCP server runs via `npx`.
+- **Permission errors:** Ensure your token has access to the files you're trying to read.
+
+## Next Steps
+
+Continue to the [Figma Console MCP guide](/getting-started/figma-console-mcp/) to add the ability to create and modify designs from Cursor.

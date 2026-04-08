@@ -1,0 +1,7 @@
+/* Custom overrides for Alex's AI Tips.
+   The Starlight Next.js theme handles most styling.
+   Add brand-specific tweaks here as needed. */
+
+:root {
+  --sl-font: 'Inter', system-ui, -apple-system, sans-serif;
+}
