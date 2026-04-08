@@ -1,0 +1,17 @@
+# Deployment
+
+This repo does NOT use GitHub Actions workflows. Do not create, modify, or reference `.github/workflows/` files.
+
+## How to deploy
+
+Deploy to GitHub Pages manually using:
+
+```bash
+npm run deploy
+```
+
+This runs `astro build`, adds `.nojekyll`, and pushes the `dist/` folder to the `gh-pages` branch via the `gh-pages` npm package.
+
+## After pushing to main
+
+Pushing to `main` does NOT auto-deploy. Always run `npm run deploy` after pushing changes that should go live.
