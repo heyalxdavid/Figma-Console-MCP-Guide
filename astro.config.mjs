@@ -24,7 +24,7 @@ export default defineConfig({
         {
           icon: 'github',
           label: 'GitHub',
-          href: 'https://github.com/ajohnson39',
+          href: 'https://github.intuit.com/ajohnson39',
         },
       ],
       sidebar: [
