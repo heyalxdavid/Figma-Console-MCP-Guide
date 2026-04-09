@@ -1,17 +1,11 @@
 # Deployment
 
-This repo does NOT use GitHub Actions workflows. Do not create, modify, or reference `.github/workflows/` files.
+This repo uses GitHub Actions to deploy to GitHub Pages automatically on push to `main`.
 
-## How to deploy
+## Workflow
 
-Deploy to GitHub Pages manually using:
-
-```bash
-npm run deploy
-```
-
-This runs `astro build`, adds `.nojekyll`, and pushes the `dist/` folder to the `gh-pages` branch via the `gh-pages` npm package.
+The deploy workflow lives at `.github/workflows/deploy.yml`. It builds the Astro site and deploys to GitHub Pages using the official `actions/deploy-pages` action.
 
 ## After pushing to main
 
-Pushing to `main` does NOT auto-deploy. Always run `npm run deploy` after pushing changes that should go live.
+Pushing to `main` auto-deploys the site to GitHub Pages.

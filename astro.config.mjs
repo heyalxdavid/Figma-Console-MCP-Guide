@@ -3,8 +3,8 @@ import starlight from '@astrojs/starlight';
 import starlightThemeBlack from 'starlight-theme-black';
 
 export default defineConfig({
-  site: 'https://github.intuit.com',
-  base: '/pages/ajohnson39/alexs-ai-tips',
+  site: 'https://heyalxdavid.github.io',
+  base: '/Figma-Console-MCP-Guide',
   integrations: [
     starlight({
       plugins: [
@@ -17,14 +17,14 @@ export default defineConfig({
           ],
         }),
       ],
-      title: "Alex's AI Tips",
+      title: 'Figma Console MCP Guide',
       description:
-        'A getting-started guide for designers working with AI tools, MCPs, and Cursor.',
+        'A getting-started guide for designers working with AI tools, Figma MCPs, and code assistants like Cursor and Claude.',
       social: [
         {
           icon: 'github',
           label: 'GitHub',
-          href: 'https://github.intuit.com/ajohnson39',
+          href: 'https://github.com/heyalxdavid/Figma-Console-MCP-Guide',
         },
       ],
       sidebar: [
