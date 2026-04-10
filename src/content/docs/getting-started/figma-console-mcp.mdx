@@ -29,19 +29,19 @@ The Console MCP requires a Figma personal access token to connect to the Figma A
 
    In the Figma desktop app, go to the main menu and select **Help and account > Account settings**.
 
-   ![Figma menu showing Help and account with Account settings highlighted](/pages/ajohnson39/alexs-ai-tips/images/figma-console-mcp/figma-account-settings.png)
+   ![Figma menu showing Help and account with Account settings highlighted](/Figma-Console-MCP-Guide/images/figma-console-mcp/figma-account-settings.png)
 
 2. **Generate a new token**
 
    Scroll down to the **Personal access tokens** section and click **Generate new token**.
 
-   ![Personal access tokens section with Generate new token link](/pages/ajohnson39/alexs-ai-tips/images/figma-console-mcp/figma-personal-access-tokens.png)
+   ![Personal access tokens section with Generate new token link](/Figma-Console-MCP-Guide/images/figma-console-mcp/figma-personal-access-tokens.png)
 
 3. **Name it and check all scopes**
 
    Give it a name like `Console MCP` and **check all the scope options**. This gives the Console MCP full access to read and write to your files, variables, and components.
 
-   ![Generate new token dialog showing all scopes checked](/pages/ajohnson39/alexs-ai-tips/images/figma-console-mcp/figma-token-scopes.png)
+   ![Generate new token dialog showing all scopes checked](/Figma-Console-MCP-Guide/images/figma-console-mcp/figma-token-scopes.png)
 
 4. **Copy and save the token**
 
@@ -191,7 +191,7 @@ The Desktop Bridge plugin connects Figma to the MCP server via WebSocket. You on
 
    Open Figma Desktop and go to **Plugins > Development > Import plugin from manifest...**.
 
-   ![Figma Plugins menu showing Development submenu with Import plugin from manifest highlighted](/pages/ajohnson39/alexs-ai-tips/images/figma-console-mcp/figma-plugins-import-manifest.png)
+   ![Figma Plugins menu showing Development submenu with Import plugin from manifest highlighted](/Figma-Console-MCP-Guide/images/figma-console-mcp/figma-plugins-import-manifest.png)
 
    In the file picker, navigate to your home folder and find this file:
 
@@ -210,17 +210,17 @@ The Desktop Bridge plugin connects Figma to the MCP server via WebSocket. You on
 
    You should see **Figma Desktop Bridge** in your development plugins list.
 
-   ![Figma Plugins and widgets panel showing Figma Desktop Bridge installed](/pages/ajohnson39/alexs-ai-tips/images/figma-console-mcp/figma-desktop-bridge-plugin.png)
+   ![Figma Plugins and widgets panel showing Figma Desktop Bridge installed](/Figma-Console-MCP-Guide/images/figma-console-mcp/figma-desktop-bridge-plugin.png)
 
 4. **Run the plugin**
 
    Open the Figma file you want to work with, then run the plugin from **Plugins > Development > Figma Desktop Bridge** (or search for it).
 
-   ![Figma search showing Figma Desktop Bridge under Recents](/pages/ajohnson39/alexs-ai-tips/images/figma-console-mcp/figma-desktop-bridge-recents.png)
+   ![Figma search showing Figma Desktop Bridge under Recents](/Figma-Console-MCP-Guide/images/figma-console-mcp/figma-desktop-bridge-recents.png)
 
    You should see the **MCP ready** indicator with a green dot. This means the bridge is active and your AI tool can communicate with this Figma file.
 
-   ![MCP ready indicator with green status dot](/pages/ajohnson39/alexs-ai-tips/images/figma-console-mcp/mcp-ready.png)
+   ![MCP ready indicator with green status dot](/Figma-Console-MCP-Guide/images/figma-console-mcp/mcp-ready.png)
 
 </Steps>
 
@@ -241,7 +241,7 @@ After completing the setup, restart both your AI tool and Figma Desktop to make 
 
 Check **Settings > Tools & MCPs**. You should see `figma-console` with a green indicator and the tools count.
 
-![Figma Console MCP connected in Cursor showing 98 tools and 2 resources enabled](/pages/ajohnson39/alexs-ai-tips/images/figma-console-mcp/cursor-figma-console-connected.png)
+![Figma Console MCP connected in Cursor showing 98 tools and 2 resources enabled](/Figma-Console-MCP-Guide/images/figma-console-mcp/cursor-figma-console-connected.png)
 
 </TabItem>
 <TabItem label="Claude Code (CLI)">
@@ -288,4 +288,4 @@ With the Figma Console MCP connected, you can ask your AI to:
 
 ## Next Steps
 
-Continue to the [GitHub Enterprise guide](../../prerequisites/github-enterprise/) to push your project to your company's GitHub, or explore the [Skills library](../../skills/) to add more capabilities to your setup.
+Continue to the [GitHub Setup guide](../../prerequisites/github-setup/) to push your project to GitHub, or explore the [Skills library](../../skills/) to add more capabilities to your setup.

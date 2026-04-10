@@ -41,7 +41,7 @@ export default defineConfig({
           items: [
             { slug: 'prerequisites/homebrew' },
             { slug: 'prerequisites/nodejs' },
-            { slug: 'prerequisites/github-enterprise' },
+            { slug: 'prerequisites/github-setup' },
           ],
         },
         {
@@ -55,12 +55,6 @@ export default defineConfig({
           label: 'Skills',
           badge: { text: 'WIP', variant: 'caution' },
           autogenerate: { directory: 'skills' },
-        },
-        {
-          label: 'Resources',
-          items: [
-            { slug: 'getting-started/intuit-resources' },
-          ],
         },
       ],
       customCss: ['./src/styles/custom.css'],

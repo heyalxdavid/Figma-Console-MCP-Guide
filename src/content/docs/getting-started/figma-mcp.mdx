@@ -25,7 +25,7 @@ Before connecting any AI tool, you need to turn on the MCP server in the Figma d
 
    In the **MCP server** section of the inspect panel, click **Enable desktop MCP server**. You should see a confirmation message that the server is running.
 
-   ![Figma Dev Mode MCP server settings showing Enable Code Connect and Disable MCP server options](/pages/ajohnson39/alexs-ai-tips/images/figma-mcp/figma-dev-mode-mcp.png)
+   ![Figma Dev Mode MCP server settings showing Enable Code Connect and Disable MCP server options](/Figma-Console-MCP-Guide/images/figma-mcp/figma-dev-mode-mcp.png)
 
 </Steps>
 
@@ -54,21 +54,21 @@ The agent will edit your `mcp.json` for you. Once it's done, verify the connecti
 
    Open the command palette with <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd> and search for **MCP**.
 
-   ![Command palette showing MCP search results](/pages/ajohnson39/alexs-ai-tips/images/figma-mcp/command-palette-mcp.png)
+   ![Command palette showing MCP search results](/Figma-Console-MCP-Guide/images/figma-mcp/command-palette-mcp.png)
 
    Select **Cursor Settings: Tools & MCPs**.
 
-   ![Cursor Settings sidebar with Tools & MCPs selected](/pages/ajohnson39/alexs-ai-tips/images/figma-mcp/cursor-tools-mcps.png)
+   ![Cursor Settings sidebar with Tools & MCPs selected](/Figma-Console-MCP-Guide/images/figma-mcp/cursor-tools-mcps.png)
 
    You can also get there from the menu bar: **Cursor > Settings... > Cursor Settings**, then select **Tools & MCPs** in the sidebar.
 
-   ![Cursor menu showing Settings path](/pages/ajohnson39/alexs-ai-tips/images/figma-mcp/cursor-settings-menu.png)
+   ![Cursor menu showing Settings path](/Figma-Console-MCP-Guide/images/figma-mcp/cursor-settings-menu.png)
 
 2. **Add a new MCP server**
 
    Click **New MCP Server**.
 
-   ![New MCP Server button](/pages/ajohnson39/alexs-ai-tips/images/figma-mcp/new-mcp-server.png)
+   ![New MCP Server button](/Figma-Console-MCP-Guide/images/figma-mcp/new-mcp-server.png)
 
    This opens your `mcp.json` file. Add the Figma desktop server configuration:
 
@@ -88,7 +88,7 @@ The agent will edit your `mcp.json` for you. Once it's done, verify the connecti
 
    After saving, you should see the Figma MCP server listed with a green indicator in your MCP settings.
 
-   ![Figma MCP connected with green indicator](/pages/ajohnson39/alexs-ai-tips/images/figma-mcp/figma-mcp-connected.png)
+   ![Figma MCP connected with green indicator](/Figma-Console-MCP-Guide/images/figma-mcp/figma-mcp-connected.png)
 
 </Steps>
 
@@ -113,9 +113,9 @@ You can verify it was added by running `claude mcp list`.
 
 Once added, start a new Claude Code session and type `/mcp` to see all connected MCP servers. You should see `figma` or `figma-desktop` listed with a green checkmark.
 
-![Claude Code /mcp command autocomplete suggestion](/pages/ajohnson39/alexs-ai-tips/images/figma-mcp/claude-code-mcp-command.png)
+![Claude Code /mcp command autocomplete suggestion](/Figma-Console-MCP-Guide/images/figma-mcp/claude-code-mcp-command.png)
 
-![Claude Code /mcp output showing figma-desktop as connected](/pages/ajohnson39/alexs-ai-tips/images/figma-mcp/claude-code-mcp-connected.png)
+![Claude Code /mcp output showing figma-desktop as connected](/Figma-Console-MCP-Guide/images/figma-mcp/claude-code-mcp-connected.png)
 
 </TabItem>
 <TabItem label="Claude Desktop">
@@ -135,9 +135,9 @@ Claude Desktop has two places that relate to Figma. Make sure you use the right 
 - **Connectors** is for the remote Figma MCP server (connects directly to Figma's cloud). You don't need the Figma desktop app for this.
 - **Developer** is where you add local MCP servers, including the Figma desktop MCP server.
 
-![Claude Desktop Connectors page showing Figma as an Interactive connector](/pages/ajohnson39/alexs-ai-tips/images/figma-mcp/claude-desktop-connectors.png)
+![Claude Desktop Connectors page showing Figma as an Interactive connector](/Figma-Console-MCP-Guide/images/figma-mcp/claude-desktop-connectors.png)
 
-![Claude Desktop Developer page showing Local MCP servers](/pages/ajohnson39/alexs-ai-tips/images/figma-mcp/claude-desktop-developer.png)
+![Claude Desktop Developer page showing Local MCP servers](/Figma-Console-MCP-Guide/images/figma-mcp/claude-desktop-developer.png)
 
 To connect the **desktop** MCP server:
 
