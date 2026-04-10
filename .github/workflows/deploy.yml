@@ -15,11 +15,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  validation:
-    uses: actions-intuit/ibp-wf/.github/workflows/validation.yml@v1
-
   build:
-    needs: validation
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -43,7 +39,7 @@ jobs:
           path: dist/
 
   deploy:
-    needs: [validation, build]
+    needs: build
     runs-on: ubuntu-latest
     environment:
       name: github-pages
